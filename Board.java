@@ -160,9 +160,17 @@ public class Board
      * right) or diagonal 1 (top right to bottom left)
      * 
      * If no Quarto has been detected, then the method returns "no quarto"
+     * If a Quarto has been detected, then the method returns a String 
+     * indicating where it was found.
+     * "row #" indicates the Quarto was found on row #
+     * "col #" indicates the Quarto was found on column #
+     * "dgn 0" indicates that the Quarto was found on a diagonal that goes 
+     * from top left to bottom right.
+     * "dgn 1" indicates that the Quarto was found on a diagonal that goes 
+     * from bottom left to top right.
      * 
      * @return a String indicating whether a Quarto! has been detected, 
-     * and where
+     * and where it was found.
      */
     public String checkForQuarto() 
     {
@@ -179,9 +187,9 @@ public class Board
             result = Piece.comparePieces(check);
             if (result.contains("1") || result.contains("2")) {
                 if (result.charAt(0) == '2')
-                    halfQuartos.add(result.substring(1));
+                    halfQuartos.add(result.substring(1) + "0" + row);
                 if (result.charAt(0) == '3')
-                    almostQuartos.add(result.substring(1));
+                    almostQuartos.add(result.substring(1) + "0" + row);
                 if (result.charAt(0) == '4')
                     return "row " + row;
             }
@@ -193,33 +201,34 @@ public class Board
             result = Piece.comparePieces(check);
             if (result.contains("1") || result.contains("2")) {
                 if (result.charAt(0) == 2)
-                    halfQuartos.add(result.substring(1));
+                    halfQuartos.add(result.substring(1) + "1" + col);
                 if (result.charAt(0) == 3)
-                    almostQuartos.add(result.substring(1));
+                    almostQuartos.add(result.substring(1) + "1" + col);
                 if (result.charAt(0) == 4)
                     return "col " + col;
             }
         }
         
         //check diagonal
+        //top left to bottom right
         check = new Piece[]{board[0][0], board[1][1], board[2][2], board[3][3]};
         result = Piece.comparePieces(check);
         if (result.contains("1") || result.contains("2")) {
             if (result.charAt(0) == 2)
-                halfQuartos.add(result.substring(1));
+                halfQuartos.add(result.substring(1) + "20");
             if (result.charAt(0) == 3)
-                almostQuartos.add(result.substring(1));
+                almostQuartos.add(result.substring(1) + "20");
             if (result.charAt(0) == 4)
             return "dgn 0";
         }
-        
+        //bbottom left to top right
         check = new Piece[]{board[0][3], board[1][2], board[2][1], board[3][0]};
         result = Piece.comparePieces(check);
         if (result.contains("1") || result.contains("2")) {
             if (result.charAt(0) == 2)
-                halfQuartos.add(result.substring(1));
+                halfQuartos.add(result.substring(1) + "21");
             if (result.charAt(0) == 3)
-                almostQuartos.add(result.substring(1));
+                almostQuartos.add(result.substring(1) + "21");
             if (result.charAt(0) == 4)
                 return "dgn 1";
         }
