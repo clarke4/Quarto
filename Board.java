@@ -146,6 +146,82 @@ public class Board
     }
     
     /**
+     * Returns an ArrayList of Strings that each describe a partial Quarto that
+     * exists in the board given as input. This method can be used to return
+     * an ArrayList of half Quartos or almost Quartos depending on whether you
+     * give '2' or '3' as the second parameter.
+     * 
+     * First four characters of the Strings identify the matching traits:
+     * Char 1: Height   (1 for tall,    2 for short,   0 for no match)
+     * Char 2: Colour   (1 for light,    2 for dark,   0 for no match)
+     * Char 3: Shape    (1 for circular, 2 for square, 0 for no match)
+     * Char 4: Material (1 for solid,    2 for hollow, 0 for no match)
+     * 
+     * Characters 5 and 6 describe position on the board of the partial Quarto.
+     * Here is what the two digits mean:
+     * '0#' - row number # (0 <= # <= 3)
+     * '1#' - column number # (0 <= # <= 3)
+     * '20' - diagonal from top left to bottom right
+     * '21' - diagonal from bottom left to top right
+     * 
+     * 
+     * @param board board being checked for partial Quartos
+     * @param type either 2 (for half Quartos) or 2 (for almost Quartos)
+     * @return ArrayList of Strings describing each half Quarto on the board
+     */
+    public ArrayList<String> getPartialQuartos(Piece[][] board, char type) {
+        if (type != '2' && type != '3') {
+            System.out.println("Incorrect useage of "
+                    + "Board.getPartialQuartos(Piece[][] board, char type) - "
+                    + "char type must either be '2' or '3'");
+        }
+        
+        //initialize vars
+        Piece[] check;
+        String result;
+        ArrayList<String> list = new ArrayList();
+        
+        //check rows
+        for (int row = 0; row < 4; row++) {
+            check = new Piece[]{board[row][0], board[row][1], board[row][2], board[row][3]};
+            result = Piece.comparePieces(check);
+            if ((result.substring(1).contains("1") 
+                    || result.substring(1).contains("2"))
+                    && result.charAt(0) == type)
+                    list.add(result.substring(1) + "0" + row);
+        }
+        
+        //check cols
+        for (int col = 0; col < 4; col++) {
+            check = new Piece[]{board[0][col], board[1][col], board[2][col], board[3][col]};
+            result = Piece.comparePieces(check);
+            if ((result.substring(1).contains("1") 
+                    || result.substring(1).contains("2"))
+                    && result.charAt(0) == type)
+                    list.add(result.substring(1) + "1" + col);
+        }
+        
+        //check diagonal
+        //top left to bottom right
+        check = new Piece[]{board[0][0], board[1][1], board[2][2], board[3][3]};
+        result = Piece.comparePieces(check);
+        if ((result.substring(1).contains("1") 
+                    || result.substring(1).contains("2"))
+                    && result.charAt(0) == type)
+                    list.add(result.substring(1) + "20");
+        
+        //bbottom left to top right
+        check = new Piece[]{board[0][3], board[1][2], board[2][1], board[3][0]};
+        result = Piece.comparePieces(check);
+        if ((result.substring(1).contains("1") 
+                    || result.substring(1).contains("2"))
+                    && result.charAt(0) == type)
+                    list.add(result.substring(1) + "21");
+        
+        return list;
+    }
+    
+    /**
      * Returns a copy of the array of pieces that have not yet been placed
      * on the board. 
      * @return remaining pieces not yet on the board
@@ -195,7 +271,7 @@ public class Board
         for (int row = 0; row < 4; row++) {
             check = new Piece[]{board[row][0], board[row][1], board[row][2], board[row][3]};
             result = Piece.comparePieces(check);
-            if (result.contains("1") || result.contains("2")) {
+            if (result.contains("1") || result.substring(1).contains("2")) {
                 if (result.charAt(0) == '2')
                     halfQuartos.add(result.substring(1));
                 if (result.charAt(0) == '3')
@@ -209,7 +285,7 @@ public class Board
         for (int col = 0; col < 4; col++) {
             check = new Piece[]{board[0][col], board[1][col], board[2][col], board[3][col]};
             result = Piece.comparePieces(check);
-            if (result.contains("1") || result.contains("2")) {
+            if (result.contains("1") || result.substring(1).contains("2")) {
                 if (result.charAt(0) == 2)
                     halfQuartos.add(result.substring(1));
                 if (result.charAt(0) == 3)
@@ -222,7 +298,7 @@ public class Board
         //check diagonal
         check = new Piece[]{board[0][0], board[1][1], board[2][2], board[3][3]};
         result = Piece.comparePieces(check);
-        if (result.contains("1") || result.contains("2")) {
+        if (result.contains("1") || result.substring(1).contains("2")) {
             if (result.charAt(0) == 2)
                 halfQuartos.add(result.substring(1));
             if (result.charAt(0) == 3)
@@ -233,7 +309,7 @@ public class Board
         
         check = new Piece[]{board[0][3], board[1][2], board[2][1], board[3][0]};
         result = Piece.comparePieces(check);
-        if (result.contains("1") || result.contains("2")) {
+        if (result.contains("1") || result.substring(1).contains("2")) {
             if (result.charAt(0) == 2)
                 halfQuartos.add(result.substring(1));
             if (result.charAt(0) == 3)
