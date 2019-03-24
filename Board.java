@@ -68,6 +68,24 @@ public class Board
     }
     
     /**
+     * AI-centred method that removes a piece from the board
+     * (to be used in AIPlayer only)
+     * 
+     * @param row row of the space being wiped
+     * @param col column of the space being wiped
+     * @return whether the wipe was successful or not
+     */
+    public boolean removePiece(int row, int col) 
+    {
+        if (!isSpaceValid(row, col)) //if space isn't valid
+        {
+            return false;
+        }
+        board[row][col] = null; //make space blank
+        return true;
+    }
+    
+    /**
      * Returns a copy of the board's current state to be printed. The copy 
      * cannot be used to manipulate the board outside of the manipulation
      * methods given.
