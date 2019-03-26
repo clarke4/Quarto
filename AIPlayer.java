@@ -588,7 +588,7 @@ public class AIPlayer implements Player {
                 }
             }
             // if piece will not lead to a win for opponent, return it
-            if (noWin) return remainingPieces[i];    
+            if (noWin) return remainingPieces[validPieces.get(i)];    
         }
         // if all pieces lead to a win for opponent, return random piece
         return getRandomPiece();       
