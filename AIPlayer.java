@@ -61,9 +61,8 @@ public class AIPlayer implements Player {
             return pieceToGiveOpponent;
             
         } else {
-            //midgame heuristic - Rajiv
-            
-            return null;
+            //midgame heuristic - Rajiv            
+            return noQuartoGetPiece();
         }
     }
 
@@ -97,8 +96,8 @@ public class AIPlayer implements Player {
 
         } else {
             //midgame heuristic - Rajiv
-            
-            return false;
+            almostQuartoMove(piece);
+            return true;
         }
     }
     
