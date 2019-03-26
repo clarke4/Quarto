@@ -23,7 +23,7 @@ public class AIPlayer implements Player {
     public static Piece[][] board;
     public static ArrayList<Node> tree = new ArrayList();
     public static ArrayList<Node> copy = new ArrayList();
-    
+    public static int count = 0;
     
     public Board game;
     
@@ -52,6 +52,10 @@ public class AIPlayer implements Player {
     public Piece getPiece() {
         
         if (game.getRemainingPieceCount() < 7) {
+            if (count == 0) {
+                pieceGiven = noQuartoGetPiece();
+                count++;
+            }
             return drive();
             
             
