@@ -18,14 +18,14 @@ piece to give to the opponent. The AI must be able to handle executing this
  */
 public class AIPlayer implements Player {
     
-    
     public static Node startNode = new Node();
     public static Piece pieceGiven;
     public static Piece[][] board;
     public static ArrayList<Node> tree = new ArrayList();
     public static ArrayList<Node> copy = new ArrayList();
-    public Board game;
     
+    
+    public Board game;
     
     private String chosenAttributes = "0000";
     private Piece pieceToGiveOpponent;
@@ -51,8 +51,8 @@ public class AIPlayer implements Player {
     @Override
     public Piece getPiece() {
         
-        if (game.getRemainingPieceCount() <= 7) {
-            drive();
+        if (game.getRemainingPieceCount() < 7) {
+            //brute force method - Jacob
             return null;
             
         } else if (Board.getPartialQuartos(game.getBoard(), '3').isEmpty()) {
@@ -85,10 +85,11 @@ public class AIPlayer implements Player {
      */
     @Override
     public boolean move(Piece piece) {
+        
+        
         if (game.getRemainingPieceCount() < 7) {
-            drive();
-            pieceGiven = piece;
-            return true;
+            //brute force method - Jacob
+            return false;
             
         } else if (Board.getPartialQuartos(game.getBoard(), '3').isEmpty()) {
             //early game heuristic - Sarah
@@ -104,6 +105,7 @@ public class AIPlayer implements Player {
             }
             return wasSuccess;
 
+            
         } else {
             //midgame heuristic - Rajiv
             almostQuartoMove(piece);
@@ -652,9 +654,33 @@ public class AIPlayer implements Player {
     
     
     
-    //JACOB
     
-    public static void buildTree(Node currentNode)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // JACOB //
+    
+     public static void buildTree(Node currentNode)
     {
         tree.add(currentNode);
         for (int i = 0; i < currentNode.children.size(); i++)
@@ -663,10 +689,10 @@ public class AIPlayer implements Player {
         }
     }
 
-    public static Piece drive()
+    public Piece drive() //EDIT removed static
     {
 
-        board = Board.getBoard();
+        board = game.getBoard();
 
         //create first node with current board
         startNode.state = board.clone();
@@ -960,7 +986,7 @@ public class AIPlayer implements Player {
         }
     }
 
-    private static Piece makeMove()
+    private Piece makeMove() //EDIT removed static
     {
         //You lost so make first move
         if (copy.size() == 1)
@@ -971,7 +997,7 @@ public class AIPlayer implements Player {
                 {
                     if (board[i][k] == null)
                     {
-                        Board.movePiece(pieceGiven.ID, i, k);
+                        game.movePiece(pieceGiven.ID, i, k); //EDIT 
                         return remainingPieces(board)[0];
                     }
                 }
@@ -1153,6 +1179,14 @@ public class AIPlayer implements Player {
         }
         return false;
     }
-  } 
     
-
+    
+    
+    
+    private static void debug(String s) {
+        if (true) {
+            System.out.println(s);
+        }
+    }
+    
+}
