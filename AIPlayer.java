@@ -663,7 +663,7 @@ public class AIPlayer implements Player {
         }
     }
 
-    public static piece drive()
+    public static Piece drive()
     {
 
         board = Board.getBoard();
