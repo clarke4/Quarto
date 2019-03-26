@@ -45,11 +45,11 @@ public class AIPlayer implements Player {
     public Piece getPiece() {
         
         if (game.getRemainingPieceCount() < 7) {
-            //brute force method
+            //brute force method - Jacob
             return null;
             
         } else if (Board.getPartialQuartos(game.getBoard(), '3').isEmpty()) {
-            //early game heuristic
+            //early game heuristic - Sarah
             if (pieceToGiveOpponent == null) {
                 for (Piece p : game.getRemainingPieces()) {
                     if (p != null) {
@@ -61,7 +61,7 @@ public class AIPlayer implements Player {
             return pieceToGiveOpponent;
             
         } else {
-            //midgame heuristic
+            //midgame heuristic - Rajiv
             
             return null;
         }
@@ -77,19 +77,29 @@ public class AIPlayer implements Player {
      */
     @Override
     public boolean move(Piece piece) {
-        //if taking the first move, randomize
-        
-        //else, do what heuristic says
-        String coords = earlyGameHeuristic(piece);
-        //get coords
-        int row = (char)coords.charAt(0)-'0';
-        int col = (char)coords.charAt(1)-'0';
-        
-        boolean wasSuccess = game.movePiece(piece.ID, row, col);
-        if (!wasSuccess) {
-            System.out.println("Something went wrong and the AI move did not happen.");
+        if (game.getRemainingPieceCount() < 7) {
+            //brute force method - Jacob
+            return false;
+            
+        } else if (Board.getPartialQuartos(game.getBoard(), '3').isEmpty()) {
+            //early game heuristic - Sarah
+            
+            String coords = earlyGameHeuristic(piece);
+            //get coords
+            int row = (char)coords.charAt(0)-'0';
+            int col = (char)coords.charAt(1)-'0';
+
+            boolean wasSuccess = game.movePiece(piece.ID, row, col);
+            if (!wasSuccess) {
+                System.out.println("Something went wrong and the AI move did not happen.");
+            }
+            return wasSuccess;
+
+        } else {
+            //midgame heuristic - Rajiv
+            
+            return false;
         }
-        return wasSuccess;
     }
     
     
