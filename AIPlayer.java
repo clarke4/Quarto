@@ -65,7 +65,9 @@ public class AIPlayer implements Player {
                 }
             }
             //Else, give chosen piece
-            return pieceToGiveOpponent;
+            Piece p = pieceToGiveOpponent;
+            pieceToGiveOpponent = null;
+            return p;
             
         } else {
             //midgame heuristic - Rajiv
