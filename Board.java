@@ -1,4 +1,4 @@
-//package quarto;
+package quarto;
 //Board.java
 //By Sarah Clarke
 
@@ -39,9 +39,38 @@ public class Board
         new Piece(14, false, false, false, true),
         new Piece(15, false, false, false, false)
     };
+    /**
+     * Stores an ArrayList of Strings that each represent a line of two pieces
+     * that share certain traits.
+     * First character: 1 if both are tall, 2 if 
+     */
+    
+    /**
+     * TODO: rite proper documentation of almostQuarto and halfQuarto
+     * Add two more characters signifying location of almost/half Quartos
+     * Char 1: height (1 tall, 2 short, 0 no match)
+     * Char 2: colour
+     * char 3: shape
+     * Char 4: material
+     * Char 5: line location (0 row, 1 col, 2 diagonal)
+     * Char 6: line location (0-3 for row/col)
+     *         0 diag means top left to bottom right, 1 is vice versa)
+     */
     private ArrayList<String> halfQuartos = new ArrayList<>(); //stores 2/4 Quartos
     private ArrayList<String> almostQuartos = new ArrayList<>(); //stores 3/4 Quartos
     // ------------------------------------------------------------------ //
+    
+    
+    
+    
+    public Board() {
+        
+    }
+    
+    
+    public Board(Piece[][] board) {
+        this.board = board;
+    }
     
     
     // ------------------------------------------------------------------ //
@@ -68,24 +97,6 @@ public class Board
     }
     
     /**
-     * AI-centred method that removes a piece from the board
-     * (to be used in AIPlayer only)
-     * 
-     * @param row row of the space being wiped
-     * @param col column of the space being wiped
-     * @return whether the wipe was successful or not
-     */
-    public boolean removePiece(int row, int col) 
-    {
-        if (!isSpaceValid(row, col)) //if space isn't valid
-        {
-            return false;
-        }
-        board[row][col] = null; //make space blank
-        return true;
-    }
-    
-    /**
      * Returns a copy of the board's current state to be printed. The copy 
      * cannot be used to manipulate the board outside of the manipulation
      * methods given.
@@ -102,11 +113,8 @@ public class Board
     /**
      * Returns an ArrayList of Strings that represent an almost complete Quarto,
      * which is a line that contains only three pieces, and those pieces share 
-     * at least one trait. Each String contains four characters that represent 
+     * at least one trait. Each String contains six characters that represent 
      * information about the half Quarto.
-     * 
-     * (If need be, this method can be altered to give more info, such as
-     * the row/column/diagonal line in which the Quarto appears)
      * 
      * First character: 1 if all pieces are tall, 2 if they're short
      * Second character: 1 if all pieces are light, 2 if they're dark
@@ -114,35 +122,18 @@ public class Board
      * Fourth character: 1 if all pieces are solid, 2 if they're hollow
      * A 0 in any of these positions means that the pieces do not share this
      * trait.
+     * 
+     * Fifth character: 0 if found in a row, 1 if found in a column, 2 if
+     * found on a diagonal
+     * Sixth character: 0-3 labels the row or column number.
+     * If found on a diagonal, then 0 marks a diagonal from top left to bottom
+     * right, and 1 marks a diagonal from bottom left to top right.
      * 
      * @return an ArrayList of Strings that each describe details about a 
      * almost completed Quarto
      */
     public ArrayList<String> getAlmostQuartos() {
         return (ArrayList)almostQuartos.clone();
-    }
-    
-    /**
-     * Returns an ArrayList of Strings that represent a half Quarto, which is
-     * a line that contains only two pieces, and those pieces share at least 
-     * one trait. Each String contains four characters that represent 
-     * information about the half Quarto.
-     * 
-     * (If need be, this method can be altered to give more info, such as
-     * the row/column/diagonal line in which the Quarto appears)
-     * 
-     * First character: 1 if all pieces are tall, 2 if they're short
-     * Second character: 1 if all pieces are light, 2 if they're dark
-     * Third character: 1 if all pieces are circular, 2 if they're square
-     * Fourth character: 1 if all pieces are solid, 2 if they're hollow
-     * A 0 in any of these positions means that the pieces do not share this
-     * trait.
-     * 
-     * @return an ArrayList of Strings that each describe details about a 
-     * half Quarto
-     */
-    public ArrayList<String> getHalfQuartos() {
-        return (ArrayList)halfQuartos.clone();
     }
     
     /**
@@ -169,7 +160,7 @@ public class Board
      * @param type either 2 (for half Quartos) or 2 (for almost Quartos)
      * @return ArrayList of Strings describing each half Quarto on the board
      */
-    public ArrayList<String> getPartialQuartos(Piece[][] board, char type) {
+    public static ArrayList<String> getPartialQuartos(Piece[][] board, char type) {
         if (type != '2' && type != '3') {
             System.out.println("Incorrect useage of "
                     + "Board.getPartialQuartos(Piece[][] board, char type) - "
@@ -222,6 +213,32 @@ public class Board
     }
     
     /**
+     * Returns an ArrayList of Strings that represent a half Quarto, which is
+     * a line that contains only two pieces, and those pieces share at least 
+     * one trait. Each String contains six characters that represent 
+     * information about the half Quarto.
+     * 
+     * First character: 1 if all pieces are tall, 2 if they're short
+     * Second character: 1 if all pieces are light, 2 if they're dark
+     * Third character: 1 if all pieces are circular, 2 if they're square
+     * Fourth character: 1 if all pieces are solid, 2 if they're hollow
+     * A 0 in any of these positions means that the pieces do not share this
+     * trait.
+     * 
+     * Fifth character: 0 if found in a row, 1 if found in a column, 2 if
+     * found on a diagonal
+     * Sixth character: 0-3 labels the row or column number.
+     * If found on a diagonal, then 0 marks a diagonal from top left to bottom
+     * right, and 1 marks a diagonal from bottom left to top right.
+     * 
+     * @return an ArrayList of Strings that each describe details about a 
+     * half Quarto
+     */
+    public ArrayList<String> getHalfQuartos() {
+        return (ArrayList)halfQuartos.clone();
+    }
+    
+    /**
      * Returns a copy of the array of pieces that have not yet been placed
      * on the board. 
      * @return remaining pieces not yet on the board
@@ -254,9 +271,17 @@ public class Board
      * right) or diagonal 1 (top right to bottom left)
      * 
      * If no Quarto has been detected, then the method returns "no quarto"
+     * If a Quarto has been detected, then the method returns a String 
+     * indicating where it was found.
+     * "row #" indicates the Quarto was found on row #
+     * "col #" indicates the Quarto was found on column #
+     * "dgn 0" indicates that the Quarto was found on a diagonal that goes 
+     * from top left to bottom right.
+     * "dgn 1" indicates that the Quarto was found on a diagonal that goes 
+     * from bottom left to top right.
      * 
      * @return a String indicating whether a Quarto! has been detected, 
-     * and where
+     * and where it was found.
      */
     public String checkForQuarto() 
     {
@@ -271,13 +296,14 @@ public class Board
         for (int row = 0; row < 4; row++) {
             check = new Piece[]{board[row][0], board[row][1], board[row][2], board[row][3]};
             result = Piece.comparePieces(check);
-            if (result.contains("1") || result.substring(1).contains("2")) {
+            if (result.substring(1).contains("1") || result.substring(1).contains("2")) {
                 if (result.charAt(0) == '2')
-                    halfQuartos.add(result.substring(1));
+                    halfQuartos.add(result.substring(1) + "0" + row);
                 if (result.charAt(0) == '3')
-                    almostQuartos.add(result.substring(1));
-                if (result.charAt(0) == '4')
+                    almostQuartos.add(result.substring(1) + "0" + row);
+                if (result.charAt(0) == '4') {
                     return "row " + row;
+                }
             }
         }
         
@@ -285,39 +311,43 @@ public class Board
         for (int col = 0; col < 4; col++) {
             check = new Piece[]{board[0][col], board[1][col], board[2][col], board[3][col]};
             result = Piece.comparePieces(check);
-            if (result.contains("1") || result.substring(1).contains("2")) {
-                if (result.charAt(0) == 2)
-                    halfQuartos.add(result.substring(1));
-                if (result.charAt(0) == 3)
-                    almostQuartos.add(result.substring(1));
-                if (result.charAt(0) == 4)
+            if (result.substring(1).contains("1") || result.substring(1).contains("2")) {
+                if (result.charAt(0) == '2')
+                    halfQuartos.add(result.substring(1) + "1" + col);
+                if (result.charAt(0) == '3')
+                    almostQuartos.add(result.substring(1) + "1" + col);
+                if (result.charAt(0) == '4') {
                     return "col " + col;
+                }
             }
         }
         
         //check diagonal
+        //top left to bottom right
         check = new Piece[]{board[0][0], board[1][1], board[2][2], board[3][3]};
         result = Piece.comparePieces(check);
-        if (result.contains("1") || result.substring(1).contains("2")) {
-            if (result.charAt(0) == 2)
-                halfQuartos.add(result.substring(1));
-            if (result.charAt(0) == 3)
-                almostQuartos.add(result.substring(1));
-            if (result.charAt(0) == 4)
-            return "dgn 0";
+        if (result.substring(1).contains("1") || result.substring(1).contains("2")) {
+            if (result.charAt(0) == '2')
+                halfQuartos.add(result.substring(1) + "20");
+            if (result.charAt(0) == '3')
+                almostQuartos.add(result.substring(1) + "21");
+            if (result.charAt(0) == '4') {
+                return "dgn 1";
+            }
         }
-        
+        //bbottom left to top right
         check = new Piece[]{board[0][3], board[1][2], board[2][1], board[3][0]};
         result = Piece.comparePieces(check);
-        if (result.contains("1") || result.substring(1).contains("2")) {
+        if (result.substring(1).contains("1") || result.substring(1).contains("2")) {
             if (result.charAt(0) == 2)
-                halfQuartos.add(result.substring(1));
+                halfQuartos.add(result.substring(1) + "21");
             if (result.charAt(0) == 3)
-                almostQuartos.add(result.substring(1));
-            if (result.charAt(0) == 4)
+                almostQuartos.add(result.substring(1) + "21");
+            if (result.charAt(0) == 4) {
                 return "dgn 1";
+            }
         }
-        
+
         return NO_QUARTO;
     }
     
@@ -364,6 +394,25 @@ public class Board
         //otherwise return false
         return false;
     }
+    
+    /**
+     * Helper method that checks if the coordinates yield a valid empty space.
+     * Returns true if so, and false if not.
+     * 
+     * @param board board containing space being checked
+     * @param row row that the Piece is in
+     * @param col column that the Piece is in
+     * @return the Piece on the space, or null if there is no piece
+     */
+    public static boolean isSpaceValid(Piece[][] board, int row, int col) 
+    {
+        //check for valid coords
+        if (row < 4 && col < 4 && row >= 0 && col >= 0)
+            //return true if space is empty
+            return board[row][col] == null;
+        //otherwise return false
+        return false;
+    }
 
     /**
      * Helper method for fetching a piece from off the board to be placed on
@@ -387,6 +436,24 @@ public class Board
         Piece p = piecesLeft[pieceID];
         piecesLeft[pieceID] = null;
         return p;
+    }
+    
+    /**
+     * AI-centred method that removes a piece from the board
+     * (to be used in AIPlayer only)
+     * 
+     * @param row row of the space being wiped
+     * @param col column of the space being wiped
+     * @return whether the wipe was successful or not
+     */
+    public boolean removePiece(int row, int col) 
+    {
+        if (!isSpaceValid(row, col)) //if space isn't valid
+        {
+            return false;
+        }
+        board[row][col] = null; //make space blank
+        return true;
     }
     
 }
