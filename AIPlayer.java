@@ -52,8 +52,8 @@ public class AIPlayer implements Player {
     public Piece getPiece() {
         
         if (game.getRemainingPieceCount() < 7) {
-            //brute force method - Jacob
-            return null;
+            return drive();
+            
             
         } else if (Board.getPartialQuartos(game.getBoard(), '3').isEmpty()) {
             //early game heuristic - Sarah
