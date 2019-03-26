@@ -51,8 +51,8 @@ public class AIPlayer implements Player {
     @Override
     public Piece getPiece() {
         
-        if (game.getRemainingPieceCount() < 7) {
-            //brute force method - Jacob
+        if (game.getRemainingPieceCount() <= 7) {
+            drive();
             return null;
             
         } else if (Board.getPartialQuartos(game.getBoard(), '3').isEmpty()) {
@@ -86,9 +86,9 @@ public class AIPlayer implements Player {
     @Override
     public boolean move(Piece piece) {
         if (game.getRemainingPieceCount() < 7) {
-            //brute force method - Jacob
+            drive();
             pieceGiven = piece;
-            return false;
+            return true;
             
         } else if (Board.getPartialQuartos(game.getBoard(), '3').isEmpty()) {
             //early game heuristic - Sarah
@@ -1010,7 +1010,7 @@ public class AIPlayer implements Player {
                             }
                         }
                         System.out.println("");
-                        Board.movePiece(pieceGiven.ID, row, col);
+                        game.movePiece(pieceGiven.ID, row, col);
                         return current.piecePlaced;
                     }
                 }
@@ -1022,7 +1022,7 @@ public class AIPlayer implements Player {
                         {
                             if (board[i][k] == null)
                             {
-                                Board.movePiece(pieceGiven.ID, i, k);
+                                game.movePiece(pieceGiven.ID, i, k);
                                 return remainingPieces(board)[0];
                             }
                         }
@@ -1047,7 +1047,7 @@ public class AIPlayer implements Player {
                     }
                 }
 
-                Board.movePiece(pieceGiven.ID, row, col);
+                game.movePiece(pieceGiven.ID, row, col);
                 return startNode.children.get(0).children.get(0).piecePlaced;
 
             }
