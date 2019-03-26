@@ -661,7 +661,7 @@ public class AIPlayer implements Player {
         }
     }
 
-    public static void drive()
+    public static piece drive()
     {
 
         board = Board.getBoard();
@@ -712,7 +712,7 @@ public class AIPlayer implements Player {
         tree.clear();
         buildTree(startNode);
 
-        makeMove();
+        return makeMove();
 
     }
 
