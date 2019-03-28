@@ -61,7 +61,9 @@ public class AIPlayer implements Player
             {
                 pieceToGive = noQuartoGetPiece();
             }
-            return pieceToGive;
+            Piece p = pieceToGive;
+            pieceToGive = null;
+            return p;
 
         }
         else if (Board.getPartialQuartos(game.getBoard(), '3').isEmpty())
