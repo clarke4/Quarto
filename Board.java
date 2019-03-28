@@ -330,7 +330,7 @@ public class Board
             if (result.charAt(0) == '2')
                 halfQuartos.add(result.substring(1) + "20");
             if (result.charAt(0) == '3')
-                almostQuartos.add(result.substring(1) + "21");
+                almostQuartos.add(result.substring(1) + "20");
             if (result.charAt(0) == '4') {
                 return "dgn 1";
             }
@@ -339,11 +339,11 @@ public class Board
         check = new Piece[]{board[0][3], board[1][2], board[2][1], board[3][0]};
         result = Piece.comparePieces(check);
         if (result.substring(1).contains("1") || result.substring(1).contains("2")) {
-            if (result.charAt(0) == 2)
+            if (result.charAt(0) == '2')
                 halfQuartos.add(result.substring(1) + "21");
-            if (result.charAt(0) == 3)
+            if (result.charAt(0) == '3')
                 almostQuartos.add(result.substring(1) + "21");
-            if (result.charAt(0) == 4) {
+            if (result.charAt(0) == '4') {
                 return "dgn 1";
             }
         }
