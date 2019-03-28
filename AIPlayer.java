@@ -57,10 +57,7 @@ public class AIPlayer implements Player
 
         if (game.getRemainingPieceCount() < 7)
         {
-            if (pieceToGive == null)
-            {
-                pieceToGive = noQuartoGetPiece();
-            }
+            pieceToGive = noQuartoGetPiece();
             Piece p = pieceToGive;
             pieceToGive = null;
             return p;
