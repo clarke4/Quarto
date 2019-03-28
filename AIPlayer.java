@@ -3,6 +3,7 @@ package quarto;
 //By Sarah Clarke
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /*
 Most turns start with the player already having a piece to place. However,
@@ -66,8 +67,24 @@ public class AIPlayer implements Player
         else if (Board.getPartialQuartos(game.getBoard(), '3').isEmpty())
         {
             //early game heuristic - Sarah
-            if (pieceToGiveOpponent == null)
-            {
+            if (pieceToGiveOpponent != null) {
+                return pieceToGiveOpponent;
+            } else {
+                //get remaining pieces
+                Piece[] piecesLeft = game.getRemainingPieces();
+                //filter out pieces that opponent can use to win
+                piecesLeft = filterBadPieces(piecesLeft); //EDIT
+                //choose a piece to give
+                pieceToGiveOpponent = choosePiece(piecesLeft);
+                
+                //if method chose good piece, return
+                if (pieceToGiveOpponent != null) {
+                    Piece p = pieceToGiveOpponent;
+                    pieceToGiveOpponent = null;
+                    return p;
+                }
+                    
+                //else, randomize
                 for (Piece p : game.getRemainingPieces())
                 {
                     if (p != null)
@@ -76,17 +93,16 @@ public class AIPlayer implements Player
                     }
                 }
             }
-            //Else, give chosen piece
-            Piece p = pieceToGiveOpponent;
-            pieceToGiveOpponent = null;
-            return p;
-
         }
         else
         {
             //midgame heuristic - Rajiv
             return noQuartoGetPiece();
         }
+        
+        //if piece isn't returned, something went wrong
+        System.out.println("Something went wrong and a piece was not returned");
+        return null;
     }
 
     /**
@@ -196,8 +212,8 @@ public class AIPlayer implements Player
     private int numPiecesOnBoardWithAttribute(int attribute)
     {
         int counter = 0;
-        int attrib = ((attribute + 1) / 2) - 1;
-        int type = attribute % 2 == 0 ? 2 : 1;
+        int attrib = ((attribute - 1) / 2); //which char t search
+        char type = attribute % 2 == 0 ? '2' : '1'; //what char to look for
 
         for (Piece[] row : game.getBoard())
         {
@@ -206,7 +222,7 @@ public class AIPlayer implements Player
                 if (p != null)
                 {
                     char c = p.toString().charAt(attrib);
-                    counter += c == (char) type ? 1 : 0;
+                    counter += (c == type) ? 1 : 0;
                 }
             }
         }
@@ -262,6 +278,7 @@ public class AIPlayer implements Player
     {
         String rowCoord = "", colCoord = "";
         ArrayList<String> choices = new ArrayList<>();
+        String moveToReturn = null;
 
         //get rows with no pieces
         for (int i = 0; i < 4; i++)
@@ -334,30 +351,37 @@ public class AIPlayer implements Player
             }
         }
 
+        //if choice eists, choose one
         if (!choices.isEmpty())
         {
-            //return random move from list
-            return choices.get((int) (Math.random() * ((double) choices.size())));
-        }
-
-        //if no valid move is chosen, return null
-        if (numPiecesPerLine < 4)
-        {
-            return getOptimalSpace(board, numPiecesPerLine + 1);
-        }
-        else
-        {
-            //randomize move - failsafe
-            while (true)
-            {
-                int row = (int) (Math.random() * 4.0);
-                int col = (int) (Math.random() * 4.0);
-                if (Board.isSpaceValid(board, row, col))
-                {
-                    return row + "" + col;
+            //scramble the list and search for valid move
+            Collections.shuffle(choices);
+            for (String choice:choices) {
+                int rowChoice = Integer.parseInt(choice.substring(0,1));
+                int colChoice = Integer.parseInt(choice.substring(1,2));
+                if (Board.isSpaceValid(board, rowChoice, colChoice)) {
+                    //choice is good - return choice
+                    return choice;
                 }
             }
         }
+        //if no valid move is chosen, allow for rows with 1 more piece
+        else if (numPiecesPerLine < 4)
+        {
+            moveToReturn = getOptimalSpace(board, numPiecesPerLine + 1);
+        }
+        
+        //randomize move - failsafe
+        while (moveToReturn == null)
+        {
+            int row = (int) (Math.random() * 4.0);
+            int col = (int) (Math.random() * 4.0);
+            if (Board.isSpaceValid(board, row, col))
+            {
+                return row + "" + col;
+            }
+        }
+        return moveToReturn;
     }
 
     /**
@@ -386,7 +410,7 @@ public class AIPlayer implements Player
             {
                 //save opposite att that is in chosenAttributes
                 int att = chosenAttributes.charAt(i) == '1' ? 2 : 1;
-                int numPieces = numPiecesOnBoardWithAttribute(att);
+                int numPieces = numPiecesOnBoardWithAttribute((2 * i) + att);
                 //if there are odd num pieces with attribute attrib
                 if (numPieces % 2 == 1)
                 {
@@ -416,8 +440,8 @@ public class AIPlayer implements Player
             if (p != null)
             {
                 String piece = p.toString();
-                if (piece.charAt(att1) == (char) ('0' + chosen[att1])
-                    && piece.charAt(att2) == (char) ('0' + chosen[att2]))
+                if (piece.charAt(att1) == chosenAttributes.charAt(att1)
+                    && piece.charAt(att2) == chosenAttributes.charAt(att2))
                 {
                     return p;
                 }
@@ -430,21 +454,23 @@ public class AIPlayer implements Player
             if (p != null)
             {
                 String piece = p.toString();
-                if (piece.charAt(att1) == (char) ('0' + chosen[att1])
-                    || piece.charAt(att2) == (char) ('0' + chosen[att2]))
+                if (piece.charAt(att1) == chosenAttributes.charAt(att1)
+                    || piece.charAt(att2) == chosenAttributes.charAt(att2))
                 {
                     return p;
                 }
             }
         }
 
-        //if none found, return -1;
+        //if none found, return null
         return null;
     }
 
     private Piece[] filterBadPieces(Piece[] piecesLeft)
     {
         //TODO - write code
+        //EDIT - possibly unnecessary because wins 
+        //are impossible during early game
         return piecesLeft;
     }
 
