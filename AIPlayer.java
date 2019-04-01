@@ -1,4 +1,3 @@
-package quarto;
 //AIPlayer.java
 //By Sarah Clarke
 
