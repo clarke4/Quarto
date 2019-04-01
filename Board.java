@@ -1,4 +1,3 @@
-package quarto;
 //Board.java
 //By Sarah Clarke
 
