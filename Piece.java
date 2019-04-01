@@ -1,4 +1,3 @@
-//package quarto;
 //Piece.java
 //By Sarah Clarke
 
@@ -180,3 +179,4 @@ public class Piece {
     }
     
 }
+    
