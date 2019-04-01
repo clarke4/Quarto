@@ -61,7 +61,6 @@ public class AIPlayer implements Player
             Piece p = pieceToGive;
             pieceToGive = null;
             return p;
-
         }
         else if (Board.getPartialQuartos(game.getBoard(), '3').isEmpty())
         {
@@ -71,8 +70,6 @@ public class AIPlayer implements Player
             } else {
                 //get remaining pieces
                 Piece[] piecesLeft = game.getRemainingPieces();
-                //filter out pieces that opponent can use to win
-                piecesLeft = filterBadPieces(piecesLeft); //EDIT
                 //choose a piece to give
                 pieceToGiveOpponent = choosePiece(piecesLeft);
                 
@@ -118,6 +115,7 @@ public class AIPlayer implements Player
 
         if (game.getRemainingPieceCount() < 7)
         {
+            debug("Moving piece " + piece);
             //endgame Jacob
             drive(piece);
             return true;
@@ -190,8 +188,6 @@ public class AIPlayer implements Player
         //choose piece to give opponent
         //get remaining pieces
         Piece[] piecesLeft = game.getRemainingPieces();
-        //filter out piecesthat opponent can use to win
-        piecesLeft = filterBadPieces(piecesLeft);
         //choose a piece to give
         pieceToGiveOpponent = choosePiece(piecesLeft);
         //return move
@@ -465,14 +461,6 @@ public class AIPlayer implements Player
         return null;
     }
 
-    private Piece[] filterBadPieces(Piece[] piecesLeft)
-    {
-        //TODO - write code
-        //EDIT - possibly unnecessary because wins 
-        //are impossible during early game
-        return piecesLeft;
-    }
-
     // RAJIV //
     /**
      * Returns an ArrayList of indices of pieces remaining.
@@ -491,6 +479,12 @@ public class AIPlayer implements Player
                 validPieces.add(index);
             }
         }
+        debug("validPieces: ");
+        //EDIT
+        validPieces.forEach((i) -> {
+            System.out.println(i);
+        });
+        //EDIT
         return validPieces;
     }
 
@@ -631,6 +625,7 @@ public class AIPlayer implements Player
      */
     public Piece noQuartoGetPiece()
     {
+        debug("Brute force getting piece");
         Piece[] remainingPieces = game.getRemainingPieces();
         ArrayList<Integer> validPieces = validPieces();
         ArrayList<String> almostQuartos = game.getAlmostQuartos();
@@ -655,10 +650,12 @@ public class AIPlayer implements Player
             // if piece will not lead to a win for opponent, return it
             if (noWin)
             {
+                debug("No win possible - return random remaining piece");
                 return remainingPieces[validPieces.get(i)];
             }
         }
         // if all pieces lead to a win for opponent, return random piece
+        debug("Returning random good piece");
         return getRandomPiece();
     }
 
