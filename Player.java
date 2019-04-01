@@ -1,4 +1,3 @@
-//package quarto;
 //Player.java
 //By Sarah Clarke
 
