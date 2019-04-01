@@ -1,7 +1,8 @@
-//package quarto;
 //Quarto.java
 //By Sarah Clarke
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 
@@ -29,8 +30,9 @@ public class Quarto {
     public Board board;
     public Player player1;
     public Player player2;
-    public final boolean withPauses = true;
+    public boolean withPauses = true;
     public Scanner kbd = new Scanner(System.in);
+    private FileWriter recordkeeper;
     // ------------------------------------------------------------------ //
     
     // ----- CLASS CONSTANTS -------------------------------------------- //
@@ -49,19 +51,25 @@ public class Quarto {
     public static void main(String[] args) {
         //initialize game
         Quarto obj = new Quarto();
+        obj.recordkeeper = null;
         obj.init(args);
         
         
         //choose player1
-        Player currentPlayer = (Math.random() < 0.5) 
-                ? obj.player1 : obj.player2;
+        Player currentPlayer = obj.player1;
         Piece currentPiece;
         String winSearcher = Board.NO_QUARTO;
         int currentPlayerNumber = 1;
+        String results;
 
+//        //TEST
+//        quartoTester(obj.board);
+//        winSearcher = obj.board.checkForQuarto();
+        
         //print board
         obj.printBoard();
         obj.pause();
+        System.out.println();
         
         while (
                 winSearcher.equals(Board.NO_QUARTO) 
@@ -94,13 +102,18 @@ public class Quarto {
         
         //if ended with tie, print necessary info
         if (winSearcher.equals(Board.NO_QUARTO))
-            System.out.println("Tie!");
+            results = "Tie!";
         else {
             //if Quarto found, last player who moved has won
             String winner = currentPlayer == obj.player1 ? "1" : "2";
-            System.out.println("The winner is player " + winner + "!");
+            results = "The winner is player " + winner + " with " 
+                    + winSearcher + " and " 
+                    + (16-obj.board.getRemainingPieceCount()) 
+                    + " pieces on the board!";
         }
         
+        System.out.println(results);
+        if (obj.recordkeeper != null) obj.writeResults(results);
         System.out.println("Thank you for playing!");
         obj.pause();
         
@@ -130,7 +143,7 @@ public class Quarto {
     public void printBoard() {
         Piece[][] b = board.getBoard();
         
-        System.out.print("     0    1    2    3\n   ");
+        System.out.print("\n\n\n\n\n\n\n\n\n\n     0    1    2    3\n   ");
         System.out.print(HORIZONTAL
         + " 0 | " + (b[0][0] == null ? "  " : b[0][0].toString().substring(0, 2))
         + " | " + (b[0][1] == null ? "  " : b[0][1].toString().substring(0, 2))
@@ -182,11 +195,11 @@ public class Quarto {
      */
     private void init(String[] args) {
         String answer;
-        if (false) {
-            //TODO
-            //IF ARGS ARE VALID, USE THEM TO SET UP
+        if (areValidArgs(args)) {
             return;
         }
+        withPauses = true;
+        
         //initialize variables
         int player = 1; //which player being initialized
         int playerType = 0; //the type of player, -1 is AI and 1 is Human
@@ -266,5 +279,54 @@ public class Quarto {
         board.movePiece(0, 3, 0);
         board.movePiece(15, 3, 1);
         board.movePiece(4, 3, 2);
+    }
+    
+    /**
+     * Takes in a board and writes a copy of a tie to it, excluding one piece.
+     */
+    private static void quartoTester(Board board) {
+        board.movePiece(12, 3, 0);
+        board.movePiece(13, 2, 1);
+        board.movePiece(14, 1, 2);
+        board.movePiece(15, 0, 3);
+    }
+
+    private boolean areValidArgs(String[] args) {
+        String p1, p2, pause, fileName;
+        if(args.length < 3) return false;
+        player1 = args[0].toLowerCase().charAt(0) == 'a' ? new AIPlayer(board)
+                : args[0].toLowerCase().charAt(0) == '1' ? new AIPlayerV1(board)
+                : args[0].toLowerCase().charAt(0) == '2' ? new AIPlayerV2(board)
+                : new HumanPlayer(board);
+        
+        player2 = args[1].toLowerCase().charAt(0) == 'a' ? new AIPlayer(board)
+                : args[1].toLowerCase().charAt(0) == '1' ? new AIPlayerV1(board)
+                : args[1].toLowerCase().charAt(0) == '2' ? new AIPlayerV2(board)
+                : new HumanPlayer(board);
+        
+        withPauses = (args[2].toLowerCase().charAt(0) == 'y');
+        
+        if (args.length < 4) return true;
+        
+        try
+        {
+            String filename= args[3];
+            recordkeeper = new FileWriter(filename,true);
+            return true;
+        }
+        catch(IOException ioe)
+        {
+            System.err.println("IOException: " + ioe.getMessage());
+            return false;
+        }
+    }
+
+    private void writeResults(String results) {
+        try {
+            recordkeeper.write(results + "\n");
+            recordkeeper.close();
+        } catch (IOException ex) {
+            System.out.println("Couldn't write results to file.");
+        }
     }
 }
