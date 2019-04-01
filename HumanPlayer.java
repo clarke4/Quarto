@@ -1,4 +1,3 @@
-//package quarto;
 //HumanPlayer.java
 //By Sarah Clarke
 
